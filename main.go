@@ -4,20 +4,15 @@ import (
 	"net/http"
 	"time"
 
+	h "TaskManager/handlers"
+	"TaskManager/stracts"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
-type Task struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Completed bool      `json:"completed"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
 func main() {
 
-	var TaskInMap = map[int]Task{
+	var Tasks = map[int]stracts.Task{
 		1: {
 			ID:        1,
 			Title:     "Make me happy!",
@@ -48,12 +43,12 @@ func main() {
 	r.Use(middleware.Logger)    // Логирование запросов
 	r.Use(middleware.Recoverer) // Восстановление после паник
 
-	r.Get("/task/", GetAllTask)
-	r.Get("/task/{id}", GetIDTask)
-	r.Post("/task/", PostTask)
+	r.Get("/task/", h.GetAllTask)
+	r.Get("/task/{id}", h.GetIDTask)
+	r.Post("/task/", h.PostTask)
 	r.Delete("/task/{id}", DeleteIDTask)
 	r.Put("/task/{id}", PutIDTask)
 
-	http.ListenAndServe(":8080", r)
+	err = http.ListenAndServe(":8080", r)
 
 }
